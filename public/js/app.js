@@ -20433,7 +20433,11 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   watch: {
-    currentRoom: function currentRoom() {
+    currentRoom: function currentRoom(val, oldVal) {
+      if (oldVal.id) {
+        this.disconnect(oldVal);
+      }
+
       this.connect();
     }
   },
@@ -20446,6 +20450,9 @@ __webpack_require__.r(__webpack_exports__);
           vm.getMessages();
         });
       }
+    },
+    disconnect: function disconnect(room) {
+      window.Echo.leave("chat." + room.id);
     },
     getRooms: function getRooms() {
       var _this = this;
