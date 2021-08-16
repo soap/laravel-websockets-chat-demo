@@ -2,7 +2,12 @@
     <app-layout title="Chat">
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Chat
+                <Chat-Room-Selection 
+                    v-if="currentRoom.id"
+                    :rooms="chatRooms"
+                    :currentRoom="currentRoom"
+                    v-on:roomChanged="setRoom($event)"
+                />
             </h2>
         </template>
 
@@ -23,12 +28,14 @@
     import AppLayout from '@/Layouts/AppLayout.vue'
     import MessageContainer from '@/Pages/Chat/MessageContainer.vue'
     import InputMessage from '@/Pages/Chat/InputMessage.vue'
+    import ChatRoomSelection from '@/Pages/Chat/ChatRoomSelection.vue'
     import axios from 'axios'
     
     export default {
         components: {
             AppLayout,
             MessageContainer,
+            ChatRoomSelection,
             InputMessage
         },
         data: function () {
@@ -39,8 +46,22 @@
             }
 
         },
+        watch: {
+            currentRoom() {
+                this.connect();
+            }    
+        },
         methods: {
-            
+            connect() {
+                if (this.currentRoom.id ) {
+                    let vm = this;
+                    this.getMessages();
+                    window.Echo.private("chat." + this.currentRoom.id)
+                    .listen('.message.new', e => {
+                        vm.getMessages()
+                    })
+                }        
+            },
             getRooms() {
                 axios.get('/chat/rooms')
                 .then(response => {

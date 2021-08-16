@@ -20382,7 +20382,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['rooms', 'currentRoom'],
+  data: function data() {
+    return {
+      selected: ''
+    };
+  },
+  created: function created() {
+    this.selected = this.currentRoom;
+  }
+});
 
 /***/ }),
 
@@ -20400,8 +20410,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Layouts_AppLayout_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Layouts/AppLayout.vue */ "./resources/js/Layouts/AppLayout.vue");
 /* harmony import */ var _Pages_Chat_MessageContainer_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/Pages/Chat/MessageContainer.vue */ "./resources/js/Pages/Chat/MessageContainer.vue");
 /* harmony import */ var _Pages_Chat_InputMessage_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/Pages/Chat/InputMessage.vue */ "./resources/js/Pages/Chat/InputMessage.vue");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _Pages_Chat_ChatRoomSelection_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/Pages/Chat/ChatRoomSelection.vue */ "./resources/js/Pages/Chat/ChatRoomSelection.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+
 
 
 
@@ -20410,6 +20422,7 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     AppLayout: _Layouts_AppLayout_vue__WEBPACK_IMPORTED_MODULE_0__.default,
     MessageContainer: _Pages_Chat_MessageContainer_vue__WEBPACK_IMPORTED_MODULE_1__.default,
+    ChatRoomSelection: _Pages_Chat_ChatRoomSelection_vue__WEBPACK_IMPORTED_MODULE_3__.default,
     InputMessage: _Pages_Chat_InputMessage_vue__WEBPACK_IMPORTED_MODULE_2__.default
   },
   data: function data() {
@@ -20419,11 +20432,25 @@ __webpack_require__.r(__webpack_exports__);
       messages: []
     };
   },
+  watch: {
+    currentRoom: function currentRoom() {
+      this.connect();
+    }
+  },
   methods: {
+    connect: function connect() {
+      if (this.currentRoom.id) {
+        var vm = this;
+        this.getMessages();
+        window.Echo["private"]("chat." + this.currentRoom.id).listen('.message.new', function (e) {
+          vm.getMessages();
+        });
+      }
+    },
     getRooms: function getRooms() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_3___default().get('/chat/rooms').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_4___default().get('/chat/rooms').then(function (response) {
         _this.chatRooms = response.data;
 
         _this.setRoom(response.data[0]);
@@ -20438,7 +20465,7 @@ __webpack_require__.r(__webpack_exports__);
     getMessages: function getMessages() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_3___default().get('/chat/room/' + this.currentRoom.id + '/messages').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_4___default().get('/chat/room/' + this.currentRoom.id + '/messages').then(function (response) {
         _this2.messages = response.data;
       })["catch"](function (error) {
         console.log(error);
@@ -24349,8 +24376,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+var _hoisted_1 = {
+  "class": "grid grid-cols-2"
+};
+var _hoisted_2 = {
+  "class": "font-bold text-x"
+};
+var _hoisted_3 = ["value"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, "Select View");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.selected.name) + " Chat ", 1
+  /* TEXT */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
+      return _ctx.selected = $event;
+    }),
+    onChange: _cache[1] || (_cache[1] = function ($event) {
+      return _ctx.$emit('roomChanged', _ctx.selected);
+    }),
+    "class": "float-right"
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.rooms, function (room, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      key: index,
+      value: room
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(room.name), 9
+    /* TEXT, PROPS */
+    , _hoisted_3);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))], 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, _ctx.selected]])])]);
 }
 
 /***/ }),
@@ -24368,13 +24423,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-
-var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
+var _hoisted_1 = {
   "class": "text-xl font-semibold leading-tight text-gray-800"
-}, " Chat ", -1
-/* HOISTED */
-);
-
+};
 var _hoisted_2 = {
   "class": "py-12"
 };
@@ -24385,6 +24436,8 @@ var _hoisted_4 = {
   "class": "overflow-hidden bg-white shadow-xl sm:rounded-lg"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_Chat_Room_Selection = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Chat-Room-Selection");
+
   var _component_Message_Container = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Message-Container");
 
   var _component_Input_Message = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Input-Message");
@@ -24395,7 +24448,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     title: "Chat"
   }, {
     header: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_1];
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_1, [_ctx.currentRoom.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Chat_Room_Selection, {
+        key: 0,
+        rooms: _ctx.chatRooms,
+        currentRoom: _ctx.currentRoom,
+        onRoomChanged: _cache[0] || (_cache[0] = function ($event) {
+          return $options.setRoom($event);
+        })
+      }, null, 8
+      /* PROPS */
+      , ["rooms", "currentRoom"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])];
     }),
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Message_Container, {
@@ -24404,7 +24466,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       /* PROPS */
       , ["messages"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Input_Message, {
         room: _ctx.currentRoom,
-        onMessagesent: _cache[0] || (_cache[0] = function ($event) {
+        onMessagesent: _cache[1] || (_cache[1] = function ($event) {
           return $options.getMessages();
         })
       }, null, 8
