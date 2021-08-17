@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Message;
+use App\Models\ChatMessage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MessageFactory extends Factory
+class ChatMessageFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Message::class;
+    protected $model = ChatMessage::class;
 
     /**
      * Define the model's default state.

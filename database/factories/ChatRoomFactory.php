@@ -12,7 +12,7 @@ class ChatRoomFactory extends Factory
      *
      * @var string
      */
-    protected $model = Channel::class;
+    protected $model = ChatRoom::class;
 
     /**
      * Define the model's default state.
