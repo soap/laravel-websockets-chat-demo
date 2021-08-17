@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ChatRoom;
 use App\Models\ChatMessage;
+use App\Events\NewChatMessage;
 use Illuminate\Database\Eloquent\InvalidCastException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Collection;
@@ -33,7 +34,7 @@ class ChatController extends Controller
     {
         return ChatMessage::where('chat_room_id', $roomId)
             ->with('user')
-            ->where('user_id', Auth::user()->id)
+            //->where('user_id', Auth::user()->id)
             ->orderBy('created_at', 'DESC')
             ->get();
     }

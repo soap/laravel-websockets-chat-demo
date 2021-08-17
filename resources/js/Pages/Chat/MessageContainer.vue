@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-96">
-        <div class="flex flex-col-reverse h-full p-2 overflw-scroll">
-            <div v-for="message in messages" :key="message.id">
+        <div class="flex flex-col-reverse h-full p-2 overflow-scroll">
+            <div class="mt-1 mb-1" v-for="message in messages" :key="message.id">
                 <Message-Item :message="message" />
             </div>   
         </div>
