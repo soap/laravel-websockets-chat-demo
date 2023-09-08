@@ -2,7 +2,7 @@
     <app-layout title="Chat">
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                <Chat-Room-Selection 
+                <Chat-Room-Selection
                     v-if="currentRoom.id"
                     :rooms="chatRooms"
                     :currentRoom="currentRoom"
@@ -15,8 +15,8 @@
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-xl sm:rounded-lg">
                     <Message-Container :messages="messages"/>
-                    <Input-Message :room="currentRoom" 
-                        v-on:messagesent="getMessages()"    
+                    <Input-Message :room="currentRoom"
+                        v-on:messagesent="getMessages()"
                     />
                 </div>
             </div>
@@ -30,7 +30,7 @@
     import InputMessage from '@/Pages/Chat/InputMessage.vue'
     import ChatRoomSelection from '@/Pages/Chat/ChatRoomSelection.vue'
     import axios from 'axios'
-    
+
     export default {
         components: {
             AppLayout,
@@ -52,18 +52,18 @@
                     this.disconnect( oldVal );
                 }
                 this.connect();
-            }    
+            }
         },
         methods: {
             connect() {
                 if (this.currentRoom.id ) {
                     let vm = this;
                     this.getMessages();
-                    window.Echo.private("chat." + this.currentRoom.id)
-                    .listen('.message.new', e => {
+                    window.Echo.private("private-chat-" + this.currentRoom.id)
+                    .listen('.newMessage', e => {
                         vm.getMessages()
                     })
-                }        
+                }
             },
             disconnect( room ) {
                 window.Echo.leave( "chat." + room.id );
@@ -72,13 +72,13 @@
                 axios.get('/chat/rooms')
                 .then(response => {
                     this.chatRooms = response.data;
-                    this.setRoom(response.data[0]);    
+                    this.setRoom(response.data[0]);
                 }).catch(error => {
                     console.log(error);
-                })              
-                
+                })
+
             },
-            
+
             setRoom(room) {
                 this.currentRoom = room;
                 this.getMessages();
@@ -90,11 +90,11 @@
                     this.messages = response.data;
                 }).catch(error => {
                     console.log(error);
-                })   
+                })
             }
 
         },
-        
+
         created() {
             this.getRooms();
         }

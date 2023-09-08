@@ -19,9 +19,9 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 // Authotise user
-Broadcast::channel('chat.{roomId}', function ($user, $roomId) {
+Broadcast::channel('chat-{roomId}', function ($user, $roomId) {
     if (Auth::check()) {
-        return ['id' => $user->id, 'name' => $user->name];
+       return true;
     }
 });
 
